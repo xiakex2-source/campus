@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>镜湖校园导览</title>
+    <link rel="preload" as="image" href="assets/campus-hero-blue-building-hd.opt.webp" fetchpriority="high" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="intro-active" data-section-theme="hero">
+    <section class="intro-splash" id="introSplash" aria-label="镜湖校园导览入场动画">
+      <div class="intro-frames" aria-hidden="true">
+        <img class="is-active" src="assets/campus-hero-blue-building-hd.opt.webp" alt="" decoding="async" fetchpriority="high" />
+        <img src="assets/campus-willow.opt.webp" alt="" decoding="async" />
+        <img src="assets/campus-bridge.opt.webp" alt="" decoding="async" />
+        <img src="assets/moments-willow-canal.opt.webp" alt="" decoding="async" />
+      </div>
+      <div class="intro-shade" aria-hidden="true"></div>
+      <div class="intro-word intro-word-left" aria-hidden="true">HBEU</div>
+      <div class="intro-word intro-word-right" aria-hidden="true">GUIDE</div>
+      <div class="intro-center">
+        <div class="intro-system">
+          <div class="intro-school">
+            <span class="intro-logo-wrap intro-logo-motion-wrap">
+              <iframe
+                class="intro-logo-motion"
+                title="湖北工程学院动态校徽"
+                src="pixel2motion_hbeu_logo/logo_motion.html?chromeless=1&speed=0.25"
+              ></iframe>
+            </span>
+            <span class="intro-school-copy">
+              <strong>湖北工程学院校园指南</strong>
+              <small>HBEU CAMPUS GUIDE</small>
+            </span>
+          </div>
+          <span class="intro-kicker">2026 新生导览系统</span>
+          <span class="intro-scan" aria-hidden="true"></span>
+        </div>
+
+        <div class="intro-route" aria-label="校园坐标点预览">
+          <svg class="intro-route-path" viewBox="0 0 520 172" preserveAspectRatio="none" aria-hidden="true">
+            <path pathLength="1" d="M42 122 C 118 44, 190 124, 270 72 S 410 34, 478 102" />
+          </svg>
+          <span class="intro-node intro-node-gate">
+            <i></i>
+            <strong>校门</strong>
+            <small>Gate</small>
+          </span>
+          <span class="intro-node intro-node-dorm">
+            <i></i>
+            <strong>宿舍</strong>
+            <small>Dorm</small>
+          </span>
+          <span class="intro-node intro-node-canteen">
+            <i></i>
+            <strong>食堂</strong>
+            <small>Canteen</small>
+          </span>
+          <span class="intro-node intro-node-library">
+            <i></i>
+            <strong>图书馆</strong>
+            <small>Library</small>
+          </span>
+        </div>
+      </div>
+      <div class="intro-meter" aria-hidden="true">
+        <span id="introNumber">00</span>
+        <i></i>
+      </div>
+      <button class="intro-skip" id="introSkip" type="button">进入</button>
+    </section>
+
+    <canvas class="silk-background" id="silkBackground" aria-hidden="true"></canvas>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <div class="section-blend" data-section-blend aria-hidden="true">
+      <span class="section-blend__grain"></span>
+    </div>
+
+    <header class="site-nav pill-nav-container">
+      <nav class="pill-nav" aria-label="Primary navigation">
+        <a class="pill-logo" href="#top" aria-label="HBEU Campus Guide home">
+          <span class="pill-logo-text">HBEU CAMPUS GUIDE</span>
+        </a>
+
+        <div class="pill-nav-items desktop-only">
+          <ul class="pill-list" role="menubar">
+            <li role="none">
+              <a class="pill is-active" href="#top" role="menuitem" aria-current="page" data-pill-link>
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                  <span class="pill-label">HERO</span>
+                  <span class="pill-label-hover" aria-hidden="true">HERO</span>
+                </span>
+              </a>
+            </li>
+            <li role="none">
+              <a class="pill" href="#route" role="menuitem" data-pill-link>
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                  <span class="pill-label">ROUTE</span>
+                  <span class="pill-label-hover" aria-hidden="true">ROUTE</span>
+                </span>
+              </a>
+            </li>
+            <li role="none">
+              <a class="pill" href="#atlas" role="menuitem" data-pill-link>
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                  <span class="pill-label">ATLAS</span>
+                  <span class="pill-label-hover" aria-hidden="true">ATLAS</span>
+                </span>
+              </a>
+            </li>
+            <li role="none">
+              <a class="pill" href="#moments" role="menuitem" data-pill-link>
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                  <span class="pill-label">MOMENTS</span>
+                  <span class="pill-label-hover" aria-hidden="true">MOMENTS</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <button class="mobile-menu-button mobile-only" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="pillMobileMenu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </nav>
+
+      <div class="mobile-menu-popover mobile-only" id="pillMobileMenu">
+        <ul class="mobile-menu-list">
+          <li><a class="mobile-menu-link is-active" href="#top" aria-current="page" data-pill-mobile-link>HERO</a></li>
+          <li><a class="mobile-menu-link" href="#route" data-pill-mobile-link>ROUTE</a></li>
+          <li><a class="mobile-menu-link" href="#atlas" data-pill-mobile-link>ATLAS</a></li>
+          <li><a class="mobile-menu-link" href="#moments" data-pill-mobile-link>MOMENTS</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero parallax-landing section-panel" data-scene>
+        <div class="hero-parallax-stack" aria-hidden="true">
+          <div class="hero-layer hero-layer-back" data-hero-speed="-0.08">
+            <img src="assets/campus-hero-blue-building-hd.opt.webp" alt="" decoding="async" fetchpriority="high" />
+          </div>
+          <div class="hero-layer hero-layer-water" data-hero-speed="-0.2">
+            <img src="assets/campus-layer-water.webp" alt="" decoding="async" />
+          </div>
+          <div class="hero-layer hero-layer-foreground" data-hero-speed="-0.42">
+            <img src="assets/campus-layer-foreground.webp" alt="" decoding="async" />
+          </div>
+        </div>
+        <img class="hero-accessible-image" src="assets/campus-hero-blue-building-hd.opt.webp" alt="蓝天下的镜湖校园建筑与水面倒影" decoding="async" fetchpriority="high" />
+        <div class="hero-shade" aria-hidden="true"></div>
+
+        <div class="viewfinder" aria-hidden="true">
+          <span class="vf-corner vf-left-top"></span>
+          <span class="vf-corner vf-center-top"></span>
+          <span class="vf-corner vf-right-top"></span>
+          <span class="vf-corner vf-left-bottom"></span>
+          <span class="vf-corner vf-center-bottom"></span>
+          <span class="vf-corner vf-right-bottom"></span>
+        </div>
+
+        <div class="hero-marquee" aria-label="Mirror-Lake Campus">
+          <div class="marquee-window">
+            <div class="marquee-corner left-top"></div>
+            <div class="marquee-corner right-top"></div>
+            <div class="marquee-corner left-bottom"></div>
+            <div class="marquee-corner right-bottom"></div>
+            <div class="marquee-track">
+              <div class="marquee-item">
+                <h1>Mirror-Lake Campus</h1>
+                <i>✦</i>
+              </div>
+              <div class="marquee-item" aria-hidden="true">
+                <h1>Mirror-Lake Campus</h1>
+                <i>✦</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-bottom-bar">
+          <a href="#moments"><span class="italic">(04)</span> Landmarks</a>
+          <span>Photo: Jinghu Campus</span>
+          <a href="#route"><span class="italic">(02)</span> Route</a>
+        </div>
+      </section>
+
+      <section class="route section-panel" id="route" data-scene>
+        <div class="route-layout">
+          <div class="route-album layer" data-speed="0.045" aria-label="校园路线图册">
+            <button class="album-card is-active" data-album-card data-route-target="gate" type="button" aria-pressed="true" style="--x: -142px; --y: -76px; --angle: -11deg; --active-x: -24px; --active-y: -8px; --active-angle: -2deg;">
+              <img src="assets/route-album-01-tree-road.webp" alt="晨光穿过树荫的校园主路" loading="lazy" decoding="async" />
+              <span class="album-index">01 / Main Road</span>
+              <strong>树荫主路</strong>
+              <div class="route-photo-mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+            <button class="album-card" data-album-card data-route-target="dorm" type="button" aria-pressed="false" style="--x: 150px; --y: -70px; --angle: 10deg; --active-x: 22px; --active-y: -6px; --active-angle: 2deg;">
+              <img src="assets/route-album-02-forest-road.webp" alt="林荫道路延伸向校园深处" loading="lazy" decoding="async" />
+              <span class="album-index">02 / Walkway</span>
+              <strong>林荫步道</strong>
+              <div class="route-photo-mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+            <button class="album-card" data-album-card data-route-target="library" type="button" aria-pressed="false" style="--x: -150px; --y: 128px; --angle: 8deg; --active-x: -18px; --active-y: 10px; --active-angle: -1deg;">
+              <img src="assets/route-album-03-covered-walk.webp" alt="树冠覆盖下的校园步行道" loading="lazy" decoding="async" />
+              <span class="album-index">03 / Green Path</span>
+              <strong>树冠小径</strong>
+              <div class="route-photo-mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+            <button class="album-card" data-album-card data-route-target="canteen" type="button" aria-pressed="false" style="--x: 154px; --y: 126px; --angle: -8deg; --active-x: 22px; --active-y: 10px; --active-angle: 1deg;">
+              <img src="assets/route-album-04-life-street.webp" alt="夕阳下热闹的校园生活街道" loading="lazy" decoding="async" />
+              <span class="album-index">04 / Life Street</span>
+              <strong>生活街区</strong>
+              <div class="route-photo-mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          </div>
+
+          <div class="route-title">
+            <span class="eyebrow">ORIENTATION / 02</span>
+            <h2>第一天，<br />从这条路开始</h2>
+            <p>校门、宿舍、食堂、图书馆，串成一条不会迷路的新生动线。</p>
+            <div class="route-flow" data-route-flow data-active-route="gate" aria-hidden="true">
+              <svg viewBox="0 0 420 260" role="img">
+                <path class="route-path-glow" d="M28 214 C 96 132, 132 198, 186 112 S 300 64, 392 32" />
+                <path class="route-path-line" d="M28 214 C 96 132, 132 198, 186 112 S 300 64, 392 32" />
+                <circle class="route-node is-route-active" data-route-point="gate" cx="28" cy="214" r="7" />
+                <circle class="route-node" data-route-point="dorm" cx="146" cy="156" r="7" />
+                <circle class="route-node" data-route-point="canteen" cx="245" cy="89" r="7" />
+                <circle class="route-node" data-route-point="library" cx="392" cy="32" r="7" />
+              </svg>
+              <span class="route-flow-label label-a is-route-active" data-route-point="gate"><strong>校门</strong><small>Gate</small></span>
+              <span class="route-flow-label label-b" data-route-point="dorm"><strong>宿舍</strong><small>Dorm</small></span>
+              <span class="route-flow-label label-c" data-route-point="canteen"><strong>食堂</strong><small>Canteen</small></span>
+              <span class="route-flow-label label-d" data-route-point="library"><strong>图书馆</strong><small>Library</small></span>
+            </div>
+          </div>
+
+          <aside class="route-board layer" data-speed="-0.035">
+            <div class="board-top">
+              <span>HBEU 新生指南</span>
+              <strong>第一天路线 · 约 35 分钟</strong>
+            </div>
+            <h3>今日路线</h3>
+            <ol class="route-tasks">
+              <li class="is-route-active" data-route-point="gate">
+                <span class="route-time">08:30</span>
+                <div>
+                  <strong>校门报到</strong>
+                  <small>校门入口 / 学院接待点</small>
+                </div>
+              </li>
+              <li data-route-point="dorm">
+                <span class="route-time">09:10</span>
+                <div>
+                  <strong>前往宿舍</strong>
+                  <small>行李路线 / 楼栋定位点</small>
+                </div>
+              </li>
+              <li data-route-point="canteen">
+                <span class="route-time">11:30</span>
+                <div>
+                  <strong>食堂就餐</strong>
+                  <small>生活区 / 超市 / 快递</small>
+                </div>
+              </li>
+              <li data-route-point="library">
+                <span class="route-time">14:00</span>
+                <div>
+                  <strong>图书馆 / 镜湖打卡</strong>
+                  <small>图书馆 / 教学楼 / 镜湖</small>
+                </div>
+              </li>
+            </ol>
+            <button type="button">查看完整路线</button>
+          </aside>
+        </div>
+        <div class="giant-text layer" data-speed="0.08" aria-hidden="true">WALK</div>
+      </section>
+
+      <section class="atlas section-panel" id="atlas" data-scene>
+        <div class="atlas-bg layer" data-speed="-0.08">
+          <img src="assets/moments-willow-canal.opt.webp" alt="校园湖岸两侧的水杉、柳树与水面倒影" loading="lazy" decoding="async" />
+        </div>
+        <div class="atlas-shade" aria-hidden="true"></div>
+        <div class="atlas-bg-word atlas-bg-word-a" aria-hidden="true">FOUR STOPS</div>
+        <div class="atlas-bg-word atlas-bg-word-b" aria-hidden="true">CAMPUS LIFE</div>
+        <div class="atlas-bg-word atlas-bg-word-c" aria-hidden="true">NEW STUDENT MAP</div>
+        <div class="atlas-content atlas-content-compact">
+          <div class="atlas-copy">
+            <span class="eyebrow">ATLAS / 03</span>
+            <h2>先认识这四个地方，校园生活就有了方向。</h2>
+            <p>把新生日常最常用的宿舍、图书馆、食堂和体育馆整理成一张轻量导览，减少信息噪音，只保留真正会反复用到的地点。</p>
+          </div>
+
+          <aside class="atlas-detail-card atlas-detail-card-photo" data-atlas-detail aria-live="polite">
+            <figure class="atlas-detail-media">
+              <img data-atlas-detail-image src="assets/atlas-dorm.opt.webp" alt="宿舍环境" loading="lazy" decoding="async" />
+            </figure>
+            <span class="atlas-detail-kicker">Selected Coordinate</span>
+            <div class="atlas-detail-head">
+              <span data-atlas-detail-index>01</span>
+              <div>
+                <strong data-atlas-detail-title>宿舍</strong>
+                <small data-atlas-detail-en>Dormitory</small>
+              </div>
+            </div>
+            <p data-atlas-detail-desc>入住、收纳和每天回到校园生活的起点。新生最先需要确认楼栋、门禁、洗衣和生活动线。</p>
+            <div class="atlas-detail-meta">
+              <span data-atlas-detail-time>入住核心点</span>
+              <span>Freshman Daily</span>
+            </div>
+          </aside>
+
+          <div class="atlas-point-list atlas-life-list" aria-label="校园四个核心生活点位">
+            <button class="atlas-point-chip is-active" data-atlas-target="dorm" type="button">
+              <img src="assets/atlas-dorm.opt.webp" alt="宿舍环境缩略图" loading="lazy" decoding="async" />
+              <span>01</span>
+              <strong>宿舍</strong>
+              <small>Dormitory / 入住与日常</small>
+            </button>
+            <button class="atlas-point-chip" data-atlas-target="library" type="button">
+              <img src="assets/atlas-library.jpg" alt="图书馆建筑缩略图" loading="lazy" decoding="async" />
+              <span>02</span>
+              <strong>图书馆</strong>
+              <small>Library / 自习与借阅</small>
+            </button>
+            <button class="atlas-point-chip" data-atlas-target="canteen" type="button">
+              <img src="assets/atlas-canteen.opt.webp" alt="食堂环境缩略图" loading="lazy" decoding="async" />
+              <span>03</span>
+              <strong>食堂</strong>
+              <small>Canteen / 三餐与补给</small>
+            </button>
+            <button class="atlas-point-chip" data-atlas-target="sports" type="button">
+              <img src="assets/atlas-gym.jpg" alt="体育馆建筑缩略图" loading="lazy" decoding="async" />
+              <span>04</span>
+              <strong>体育馆</strong>
+              <small>Gymnasium / 运动与活动</small>
+            </button>
+          </div>
+
+          <div class="atlas-map-stage" data-atlas-stage data-active-atlas="dorm" aria-label="校园四点生活导览沙盘">
+            <div class="atlas-map-panel" data-atlas-map-panel>
+              <div class="atlas-map-grid" aria-hidden="true"></div>
+              <div class="atlas-map-water" aria-hidden="true">
+                <span>Jinghu</span>
+              </div>
+              <div class="atlas-tree-line atlas-tree-line-a" aria-hidden="true"></div>
+              <div class="atlas-tree-line atlas-tree-line-b" aria-hidden="true"></div>
+
+              <article class="atlas-zone atlas-zone-dorm" aria-hidden="true" style="--x: 27%; --y: 32%;">
+                <img src="assets/atlas-dorm.opt.webp" alt="" loading="lazy" decoding="async" />
+                <span>宿舍</span>
+              </article>
+              <article class="atlas-zone atlas-zone-library" aria-hidden="true" style="--x: 66%; --y: 24%;">
+                <img src="assets/atlas-library.jpg" alt="" loading="lazy" decoding="async" />
+                <span>图书馆</span>
+              </article>
+              <article class="atlas-zone atlas-zone-canteen" aria-hidden="true" style="--x: 42%; --y: 63%;">
+                <img src="assets/atlas-canteen.opt.webp" alt="" loading="lazy" decoding="async" />
+                <span>食堂</span>
+              </article>
+              <article class="atlas-zone atlas-zone-sports" aria-hidden="true" style="--x: 18%; --y: 51%;">
+                <img src="assets/atlas-gym.jpg" alt="" loading="lazy" decoding="async" />
+                <span>体育馆</span>
+              </article>
+
+              <svg class="atlas-route-svg" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+                <path class="atlas-route-spine" d="M220 450 C 340 340, 460 420, 540 320 S 710 230, 806 156" />
+                <path class="atlas-route-line is-active" data-atlas-route="dorm" d="M500 330 C 430 250, 360 210, 300 190" />
+                <path class="atlas-route-line" data-atlas-route="library" d="M500 330 C 560 250, 620 190, 680 150" />
+                <path class="atlas-route-line" data-atlas-route="canteen" d="M500 330 C 470 390, 420 398, 380 392" />
+                <path class="atlas-route-line" data-atlas-route="sports" d="M500 330 C 360 350, 250 326, 178 296" />
+              </svg>
+
+              <div class="atlas-map-hub" aria-hidden="true">
+                <span></span>
+                <strong>Life Hub</strong>
+              </div>
+
+              <button class="atlas-map-point is-active" data-atlas-point="dorm" data-atlas-index="01" data-atlas-title="宿舍" data-atlas-en="Dormitory" data-atlas-time="入住核心点" data-atlas-image="assets/atlas-dorm.opt.webp" data-atlas-image-alt="宿舍环境" data-atlas-desc="入住、收纳和每天回到校园生活的起点。新生最先需要确认楼栋、门禁、洗衣和生活动线。" type="button" style="--x: 30%; --y: 30%;">
+                <span class="atlas-point-dot"></span>
+                <span class="atlas-point-label"><strong>宿舍</strong><small>Dormitory</small></span>
+              </button>
+              <button class="atlas-map-point" data-atlas-point="library" data-atlas-index="02" data-atlas-title="图书馆" data-atlas-en="Library" data-atlas-time="学习核心点" data-atlas-image="assets/atlas-library.jpg" data-atlas-image-alt="图书馆建筑" data-atlas-desc="自习、借阅、查资料和校园打卡都集中在这里，是新生建立学习节奏的重要坐标。" type="button" style="--x: 66%; --y: 24%;">
+                <span class="atlas-point-dot"></span>
+                <span class="atlas-point-label"><strong>图书馆</strong><small>Library</small></span>
+              </button>
+              <button class="atlas-map-point" data-atlas-point="canteen" data-atlas-index="03" data-atlas-title="食堂" data-atlas-en="Canteen" data-atlas-time="三餐核心点" data-atlas-image="assets/atlas-canteen.opt.webp" data-atlas-image-alt="食堂环境" data-atlas-desc="三餐、同学聚餐和日常补给都从这里开始。先熟悉食堂位置，会明显降低开学前几天的陌生感。" type="button" style="--x: 42%; --y: 63%;">
+                <span class="atlas-point-dot"></span>
+                <span class="atlas-point-label"><strong>食堂</strong><small>Canteen</small></span>
+              </button>
+              <button class="atlas-map-point" data-atlas-point="sports" data-atlas-index="04" data-atlas-title="体育馆" data-atlas-en="Gymnasium" data-atlas-time="运动核心点" data-atlas-image="assets/atlas-gym.jpg" data-atlas-image-alt="体育馆建筑" data-atlas-desc="体育课、训练、比赛和大型活动的主要地点。它也是校园中最有辨识度的公共建筑之一。" type="button" style="--x: 18%; --y: 51%;">
+                <span class="atlas-point-dot"></span>
+                <span class="atlas-point-label"><strong>体育馆</strong><small>Gymnasium</small></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="moments section-panel" id="moments" data-moments-scene>
+        <div class="moments-bg-word moments-bg-word-a" aria-hidden="true">JINGHU</div>
+        <div class="moments-bg-word moments-bg-word-b" aria-hidden="true">NATURE</div>
+        <div class="moments-bg-word moments-bg-word-c" aria-hidden="true">LANDMARKS</div>
+
+        <div class="moments-head" data-moments-depth="-18">
+          <span class="eyebrow">LANDMARKS / 04</span>
+          <h2>沿着湖岸，把校园风景一帧帧展开。</h2>
+          <p>主楼倒影、石桥湖岸与四季树影，被整理成一座可以横向穿行的自然影像展厅。</p>
+        </div>
+
+        <div class="moments-gallery" aria-label="镜湖校园自然影像展厅">
+          <iframe src="circular-gallery-test.html" class="moments-carousel-stage" id="circularGalleryContainer" frameborder="0" allow="transparency"></iframe>
+        </div>
+
+        <div class="moments-finale" data-moments-finale aria-label="校园收尾视觉">
+          <div class="moments-finale__orb" aria-hidden="true"></div>
+          <div class="moments-finale__copy">
+            施工ing
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Draggable.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
