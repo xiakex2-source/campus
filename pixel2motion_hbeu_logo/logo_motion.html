@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HBEU Logo Motion</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f5f3;
+      --border: rgba(0,0,0,0.08);
+      --text-primary: #0d0d0d;
+      --text-secondary: #777;
+      --text-tertiary: #aaa;
+      --accent: #e64036;
+      --speed-progress: 9%;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    #logo-root {
+      width: min(92vw, 896px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: visible;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #logo-root svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+      text-rendering: geometricPrecision;
+    }
+
+    .atomic-motions {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-end;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .atom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .atom-stage {
+      width: 74px;
+      height: 74px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .atom-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 260ms cubic-bezier(0.34,1.56,0.64,1);
+      transform-origin: center;
+    }
+
+    .atom-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    .principles {
+      max-width: 760px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pill {
+      font-size: 11px;
+      line-height: 1;
+      padding: 5px 10px;
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .pill.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font: 12px/1.2 inherit;
+      letter-spacing: 0.04em;
+      padding: 8px 18px;
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    button.primary {
+      color: var(--bg);
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+
+    .speed-control {
+      width: min(340px, 80vw);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-secondary);
+    }
+
+    .speed-caption,
+    .speed-value {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .speed-value {
+      min-width: 46px;
+      text-align: right;
+      color: var(--text-primary);
+      text-transform: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      min-width: 120px;
+      height: 24px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      cursor: grab;
+      accent-color: var(--accent);
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--speed-progress), var(--border) var(--speed-progress), var(--border) 100%);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      margin-top: -6.5px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      background: var(--accent);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+    }
+
+    .footer {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .p2m-chromeless .atomic-motions,
+    .p2m-chromeless .principles,
+    .p2m-chromeless .controls,
+    .p2m-chromeless .footer {
+      display: none;
+    }
+
+    .p2m-chromeless body {
+      min-height: 100vh;
+      gap: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .p2m-chromeless #logo-root {
+      width: min(76vw, 560px);
+      background: transparent;
+      filter: drop-shadow(0 18px 36px rgba(20, 84, 178, 0.12));
+    }
+
+    .p2m-chromeless,
+    .p2m-chromeless body {
+      background: transparent !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+          :root {
+            --p2m-duration: 1900ms;
+            --p2m-ease-enter: cubic-bezier(0.34, 0, 0.14, 1);
+            --p2m-ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+            --p2m-ease-ring: cubic-bezier(0.4, 0, 0.2, 1);
+            --p2m-overshoot: 1.018;
+          }
+
+          #logo-root svg {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: p2m-stage var(--p2m-duration) var(--p2m-ease-enter) both;
+            will-change: transform, opacity, filter;
+          }
+
+          #outer-ring, #inner-ring {
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: p2m-ring var(--p2m-duration) var(--p2m-ease-ring) both;
+            will-change: stroke-dashoffset, opacity, transform;
+          }
+
+          #inner-ring {
+            animation-name: p2m-ring-inner;
+          }
+
+          #wordmark-cn, #wordmark-en, #year-1943 {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: p2m-text-reveal var(--p2m-duration) cubic-bezier(0.16, 1, 0.3, 1) both;
+            will-change: opacity, transform;
+          }
+
+          #wordmark-en {
+            animation-name: p2m-en-reveal;
+          }
+
+          #year-1943 {
+            animation-name: p2m-year-reveal;
+          }
+
+          .tower {
+            transform-box: fill-box;
+            transform-origin: bottom center;
+            animation: p2m-tower-rise 1280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: calc(360ms + var(--i) * 23ms);
+            will-change: opacity, transform;
+          }
+
+          .wave {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: p2m-wave-flow var(--p2m-duration) cubic-bezier(0.16, 1, 0.3, 1) both;
+            will-change: opacity, transform;
+          }
+
+          #wave-bottom {
+            animation-name: p2m-wave-flow-bottom;
+          }
+
+          @keyframes p2m-stage {
+            0% { opacity: 0; transform: scale(0.94) translateY(18px); filter: blur(8px); animation-timing-function: cubic-bezier(0.34, 0, 0.14, 1); }
+            12% { opacity: 0.22; transform: scale(0.915) translateY(24px); filter: blur(5px); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            54% { opacity: 1; transform: scale(var(--p2m-overshoot)) translateY(-4px); filter: blur(0); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            78% { transform: scale(0.996) translateY(1px); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+          }
+
+          @keyframes p2m-ring {
+            0% { opacity: 0; stroke-dashoffset: 1; transform: rotate(-18deg) scale(0.985); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            8% { opacity: 1; stroke-dashoffset: 1; transform: rotate(-12deg) scale(0.985); animation-timing-function: cubic-bezier(0.34, 0, 0.14, 1); }
+            52% { opacity: 1; stroke-dashoffset: 0; transform: rotate(1.4deg) scale(1.004); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            82% { stroke-dashoffset: 0; transform: rotate(0deg) scale(1); }
+            100% { opacity: 1; stroke-dashoffset: 0; transform: rotate(0deg) scale(1); }
+          }
+
+          @keyframes p2m-ring-inner {
+            0% { opacity: 0; stroke-dashoffset: 1; transform: rotate(16deg) scale(0.98); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            11% { opacity: 1; stroke-dashoffset: 1; transform: rotate(12deg) scale(0.98); animation-timing-function: cubic-bezier(0.34, 0, 0.14, 1); }
+            57% { opacity: 1; stroke-dashoffset: 0; transform: rotate(-1deg) scale(1.004); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            84% { stroke-dashoffset: 0; transform: rotate(0deg) scale(1); }
+            100% { opacity: 1; stroke-dashoffset: 0; transform: rotate(0deg) scale(1); }
+          }
+
+          @keyframes p2m-text-reveal {
+            0%, 20% { opacity: 0; transform: translateY(-13px) scale(0.985); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            50% { opacity: 1; transform: translateY(2px) scale(1.006); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            78% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+
+          @keyframes p2m-en-reveal {
+            0%, 28% { opacity: 0; transform: translateY(18px) scale(0.985); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            62% { opacity: 1; transform: translateY(-2px) scale(1.004); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            86% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+
+          @keyframes p2m-year-reveal {
+            0%, 48% { opacity: 0; transform: translateY(12px) scale(0.96); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            72% { opacity: 1; transform: translateY(-1px) scale(1.02); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+
+          @keyframes p2m-tower-rise {
+            0% { opacity: 0; transform: scaleY(0.06) translateY(36px); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            62% { opacity: 1; transform: scaleY(1.035) translateY(-4px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+            82% { opacity: 1; transform: scaleY(0.995) translateY(1px); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            100% { opacity: 1; transform: scaleY(1) translateY(0); }
+          }
+
+          @keyframes p2m-wave-flow {
+            0%, 48% { opacity: 0; transform: translateX(-54px) translateY(12px) scaleX(0.86); animation-timing-function: cubic-bezier(0.34, 0, 0.14, 1); }
+            75% { opacity: 1; transform: translateX(8px) translateY(-2px) scaleX(1.02); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            100% { opacity: 1; transform: translateX(0) translateY(0) scaleX(1); }
+          }
+
+          @keyframes p2m-wave-flow-bottom {
+            0%, 54% { opacity: 0; transform: translateX(56px) translateY(18px) scaleX(0.82); animation-timing-function: cubic-bezier(0.34, 0, 0.14, 1); }
+            80% { opacity: 1; transform: translateX(-6px) translateY(-2px) scaleX(1.018); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+            100% { opacity: 1; transform: translateX(0) translateY(0) scaleX(1); }
+          }
+    }
+  </style>
+</head>
+<body>
+  <main id="logo-root" aria-label="Animated logo" data-p2m-duration="1900"></main>
+
+  <section class="atomic-motions" aria-label="Atomic motion studies">
+    <div class="atom" data-atom="hover"><div class="atom-stage"></div><span class="atom-label">Hover</span></div>
+    <div class="atom" data-atom="pulse"><div class="atom-stage"></div><span class="atom-label">Pulse</span></div>
+    <div class="atom" data-atom="arc"><div class="atom-stage"></div><span class="atom-label">Arc</span></div>
+    <div class="atom" data-atom="press"><div class="atom-stage"></div><span class="atom-label">Press</span></div>
+  </section>
+
+  <div class="principles" id="principlesRow">
+    <span class="pill" data-p="squashstretch">Squash &amp; stretch</span>
+    <span class="pill" data-p="anticipation">Anticipation</span>
+    <span class="pill" data-p="staging">Staging</span>
+    <span class="pill" data-p="followthrough">Follow through</span>
+    <span class="pill" data-p="overlap">Overlapping</span>
+    <span class="pill" data-p="slowinout">Slow in / out</span>
+    <span class="pill" data-p="arc">Arc</span>
+    <span class="pill" data-p="secondary">Secondary action</span>
+    <span class="pill" data-p="timing">Timing</span>
+    <span class="pill" data-p="appeal">Appeal</span>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="btnReplay" type="button">Replay</button>
+    <button id="btnSlow" type="button">Slow motion</button>
+    <label class="speed-control" for="speedSlider">
+      <span class="speed-caption">Speed</span>
+      <input id="speedSlider" type="range" min="0.25" max="2.5" step="0.05" value="0.45" aria-label="Animation speed">
+      <span class="speed-value" id="speedValue">0.45x</span>
+    </label>
+  </div>
+
+  <p class="footer">Click the main logo to replay | Drag speed | Try atomic motions</p>
+
+  <script>
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const LOGO = {"tag":"svg","attrs":{"id":"hbeu-logo","viewBox":"0 0 1280 1273","width":"1280","height":"1273","role":"img","aria-labelledby":"title desc"},"children":[{"tag":"title","attrs":{"id":"title"},"children":[],"text":"Hubei Engineering University emblem"},{"tag":"desc","attrs":{"id":"desc"},"children":[],"text":"A cleaned vector rebuild of the Hubei Engineering University school emblem, without the source watermark."},{"tag":"defs","attrs":{},"children":[{"tag":"linearGradient","attrs":{"id":"blueShade","x1":"0","y1":"0","x2":"1","y2":"0"},"children":[{"tag":"stop","attrs":{"offset":"0","stop-color":"#1452B3"},"children":[]},{"tag":"stop","attrs":{"offset":"0.52","stop-color":"#1F63CF"},"children":[]},{"tag":"stop","attrs":{"offset":"1","stop-color":"#0D3F91"},"children":[]}]},{"tag":"filter","attrs":{"id":"softBlueShadow","x":"-15%","y":"-15%","width":"130%","height":"130%"},"children":[{"tag":"feDropShadow","attrs":{"dx":"0","dy":"8","stdDeviation":"10","flood-color":"#0D3F91","flood-opacity":"0.14"},"children":[]}]},{"tag":"clipPath","attrs":{"id":"innerDiskClip"},"children":[{"tag":"circle","attrs":{"cx":"640","cy":"635","r":"424"},"children":[]}]}]},{"tag":"g","attrs":{"id":"emblem-root","filter":"url(#softBlueShadow)"},"children":[{"tag":"circle","attrs":{"id":"outer-ring","cx":"640","cy":"635","r":"594","fill":"none","stroke":"#1452B3","stroke-width":"23","pathLength":"1"},"children":[]},{"tag":"circle","attrs":{"id":"inner-ring","cx":"640","cy":"635","r":"424","fill":"none","stroke":"#1452B3","stroke-width":"14","pathLength":"1"},"children":[]},{"tag":"g","attrs":{"id":"wordmark-cn","class":"ring-text"},"children":[{"tag":"text","attrs":{"id":"cn-letter-0","class":"cn-letter","x":"288.64","y":"262.58","transform":"rotate(316.67 288.64 262.58)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"湖"},{"tag":"text","attrs":{"id":"cn-letter-1","class":"cn-letter","x":"415.55","y":"174.82","transform":"rotate(334.00 415.55 174.82)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"北"},{"tag":"text","attrs":{"id":"cn-letter-2","class":"cn-letter","x":"562.85","y":"128.85","transform":"rotate(351.33 562.85 128.85)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"工"},{"tag":"text","attrs":{"id":"cn-letter-3","class":"cn-letter","x":"717.15","y":"128.85","transform":"rotate(368.67 717.15 128.85)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"程"},{"tag":"text","attrs":{"id":"cn-letter-4","class":"cn-letter","x":"864.45","y":"174.82","transform":"rotate(386.00 864.45 174.82)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"学"},{"tag":"text","attrs":{"id":"cn-letter-5","class":"cn-letter","x":"991.36","y":"262.58","transform":"rotate(403.33 991.36 262.58)","font-family":"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif","font-size":"76","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"院"}]},{"tag":"g","attrs":{"id":"wordmark-en","class":"ring-text"},"children":[{"tag":"text","attrs":{"id":"en-letter-0","class":"en-letter","x":"127.11","y":"681.57","transform":"rotate(84.81 127.11 681.57)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"H"},{"tag":"text","attrs":{"id":"en-letter-1","class":"en-letter","x":"135.46","y":"738.25","transform":"rotate(78.43 135.46 738.25)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"U"},{"tag":"text","attrs":{"id":"en-letter-2","class":"en-letter","x":"150.05","y":"793.65","transform":"rotate(72.06 150.05 793.65)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"B"},{"tag":"text","attrs":{"id":"en-letter-3","class":"en-letter","x":"170.70","y":"847.08","transform":"rotate(65.68 170.70 847.08)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"E"},{"tag":"text","attrs":{"id":"en-letter-4","class":"en-letter","x":"197.16","y":"897.90","transform":"rotate(59.30 197.16 897.90)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"I"},{"tag":"text","attrs":{"id":"en-letter-6","class":"en-letter","x":"258.33","y":"980.76","transform":"rotate(47.83 258.33 980.76)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"E"},{"tag":"text","attrs":{"id":"en-letter-7","class":"en-letter","x":"299.09","y":"1021.01","transform":"rotate(41.45 299.09 1021.01)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"N"},{"tag":"text","attrs":{"id":"en-letter-8","class":"en-letter","x":"344.07","y":"1056.49","transform":"rotate(35.07 344.07 1056.49)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"G"},{"tag":"text","attrs":{"id":"en-letter-9","class":"en-letter","x":"392.72","y":"1086.75","transform":"rotate(28.70 392.72 1086.75)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"I"},{"tag":"text","attrs":{"id":"en-letter-10","class":"en-letter","x":"444.42","y":"1111.42","transform":"rotate(22.32 444.42 1111.42)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"N"},{"tag":"text","attrs":{"id":"en-letter-11","class":"en-letter","x":"498.55","y":"1130.19","transform":"rotate(15.94 498.55 1130.19)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"E"},{"tag":"text","attrs":{"id":"en-letter-12","class":"en-letter","x":"554.42","y":"1142.84","transform":"rotate(9.57 554.42 1142.84)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"E"},{"tag":"text","attrs":{"id":"en-letter-13","class":"en-letter","x":"611.36","y":"1149.20","transform":"rotate(3.19 611.36 1149.20)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"R"},{"tag":"text","attrs":{"id":"en-letter-14","class":"en-letter","x":"668.64","y":"1149.20","transform":"rotate(-3.19 668.64 1149.20)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"I"},{"tag":"text","attrs":{"id":"en-letter-15","class":"en-letter","x":"725.58","y":"1142.84","transform":"rotate(-9.57 725.58 1142.84)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"N"},{"tag":"text","attrs":{"id":"en-letter-16","class":"en-letter","x":"781.45","y":"1130.19","transform":"rotate(-15.94 781.45 1130.19)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"G"},{"tag":"text","attrs":{"id":"en-letter-18","class":"en-letter","x":"877.16","y":"1092.14","transform":"rotate(-27.42 877.16 1092.14)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"U"},{"tag":"text","attrs":{"id":"en-letter-19","class":"en-letter","x":"926.47","y":"1062.97","transform":"rotate(-33.80 926.47 1062.97)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"N"},{"tag":"text","attrs":{"id":"en-letter-20","class":"en-letter","x":"972.23","y":"1028.51","transform":"rotate(-40.17 972.23 1028.51)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"I"},{"tag":"text","attrs":{"id":"en-letter-21","class":"en-letter","x":"1013.88","y":"989.17","transform":"rotate(-46.55 1013.88 989.17)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"V"},{"tag":"text","attrs":{"id":"en-letter-22","class":"en-letter","x":"1050.90","y":"945.45","transform":"rotate(-52.93 1050.90 945.45)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"E"},{"tag":"text","attrs":{"id":"en-letter-23","class":"en-letter","x":"1082.84","y":"897.90","transform":"rotate(-59.30 1082.84 897.90)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"R"},{"tag":"text","attrs":{"id":"en-letter-24","class":"en-letter","x":"1109.30","y":"847.08","transform":"rotate(-65.68 1109.30 847.08)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"S"},{"tag":"text","attrs":{"id":"en-letter-25","class":"en-letter","x":"1129.95","y":"793.65","transform":"rotate(-72.06 1129.95 793.65)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"I"},{"tag":"text","attrs":{"id":"en-letter-26","class":"en-letter","x":"1144.54","y":"738.25","transform":"rotate(-78.43 1144.54 738.25)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"T"},{"tag":"text","attrs":{"id":"en-letter-27","class":"en-letter","x":"1152.89","y":"681.57","transform":"rotate(-84.81 1152.89 681.57)","font-family":"Arial, Helvetica, sans-serif","font-size":"68","font-weight":"600","fill":"#1452B3","text-anchor":"middle","dominant-baseline":"middle"},"children":[],"text":"Y"}]},{"tag":"g","attrs":{"id":"mark","clip-path":"url(#innerDiskClip)"},"children":[{"tag":"g","attrs":{"id":"towers"},"children":[{"tag":"rect","attrs":{"id":"tower-01","class":"tower","x":"268","y":"580","width":"36","height":"220","rx":"18","fill":"url(#blueShade)","style":"--i:0"},"children":[]},{"tag":"rect","attrs":{"id":"tower-02","class":"tower","x":"322","y":"592","width":"36","height":"196","rx":"18","fill":"url(#blueShade)","style":"--i:1"},"children":[]},{"tag":"rect","attrs":{"id":"tower-03","class":"tower","x":"378","y":"596","width":"36","height":"184","rx":"18","fill":"url(#blueShade)","style":"--i:2"},"children":[]},{"tag":"rect","attrs":{"id":"tower-04","class":"tower","x":"432","y":"602","width":"36","height":"178","rx":"18","fill":"url(#blueShade)","style":"--i:3"},"children":[]},{"tag":"rect","attrs":{"id":"tower-05","class":"tower","x":"498","y":"420","width":"44","height":"360","rx":"22","fill":"url(#blueShade)","style":"--i:4"},"children":[]},{"tag":"rect","attrs":{"id":"tower-06","class":"tower","x":"552","y":"350","width":"36","height":"345","rx":"18","fill":"url(#blueShade)","style":"--i:5"},"children":[]},{"tag":"rect","attrs":{"id":"tower-07","class":"tower","x":"602","y":"520","width":"36","height":"170","rx":"18","fill":"url(#blueShade)","style":"--i:6"},"children":[]},{"tag":"rect","attrs":{"id":"tower-08","class":"tower","x":"654","y":"520","width":"36","height":"170","rx":"18","fill":"url(#blueShade)","style":"--i:7"},"children":[]},{"tag":"rect","attrs":{"id":"tower-09","class":"tower","x":"706","y":"350","width":"36","height":"345","rx":"18","fill":"url(#blueShade)","style":"--i:8"},"children":[]},{"tag":"rect","attrs":{"id":"tower-10","class":"tower","x":"760","y":"420","width":"44","height":"360","rx":"22","fill":"url(#blueShade)","style":"--i:9"},"children":[]},{"tag":"rect","attrs":{"id":"tower-11","class":"tower","x":"820","y":"602","width":"36","height":"178","rx":"18","fill":"url(#blueShade)","style":"--i:10"},"children":[]},{"tag":"rect","attrs":{"id":"tower-12","class":"tower","x":"874","y":"596","width":"36","height":"184","rx":"18","fill":"url(#blueShade)","style":"--i:11"},"children":[]},{"tag":"rect","attrs":{"id":"tower-13","class":"tower","x":"930","y":"592","width":"36","height":"196","rx":"18","fill":"url(#blueShade)","style":"--i:12"},"children":[]},{"tag":"rect","attrs":{"id":"tower-14","class":"tower","x":"984","y":"580","width":"36","height":"220","rx":"18","fill":"url(#blueShade)","style":"--i:13"},"children":[]}]},{"tag":"text","attrs":{"id":"year-1943","x":"640","y":"742","font-family":"Arial, Helvetica, sans-serif","font-size":"74","font-weight":"500","fill":"#1452B3","text-anchor":"middle"},"children":[],"text":"1943"},{"tag":"path","attrs":{"id":"wave-top","class":"wave","fill":"#1452B3","d":"M252 819 C356 760 476 782 590 824 C716 870 835 884 1028 806 C956 882 796 931 642 895 C504 861 382 805 252 819 Z"},"children":[]},{"tag":"path","attrs":{"id":"wave-bottom","class":"wave","fill":"#1452B3","d":"M366 903 C496 858 620 903 746 932 C824 950 899 947 972 916 C890 985 748 996 596 950 C500 921 435 892 366 903 Z"},"children":[]}]}]}]};
+    const SVG_TEXT = "<svg id=\"hbeu-logo\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1280 1273\" width=\"1280\" height=\"1273\" role=\"img\" aria-labelledby=\"title desc\"><style>:root,svg{--bg:#ffffff;--surface:#f5f5f3;--text-primary:#0d0d0d;--text-secondary:#777;--text-tertiary:#aaa;--logo-wordmark:#363e47;--accent:#e64036;--red:#e64036;--red-bright:#ff493f;}<\/style>\n  <title id=\"title\">Hubei Engineering University emblem<\/title>\n  <desc id=\"desc\">A cleaned vector rebuild of the Hubei Engineering University school emblem, without the source watermark.<\/desc>\n  <defs>\n    <linearGradient id=\"blueShade\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\">\n      <stop offset=\"0\" stop-color=\"#1452B3\"/>\n      <stop offset=\"0.52\" stop-color=\"#1F63CF\"/>\n      <stop offset=\"1\" stop-color=\"#0D3F91\"/>\n    <\/linearGradient>\n    <filter id=\"softBlueShadow\" x=\"-15%\" y=\"-15%\" width=\"130%\" height=\"130%\">\n      <feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"10\" flood-color=\"#0D3F91\" flood-opacity=\"0.14\"/>\n    <\/filter>\n    <clipPath id=\"innerDiskClip\">\n      <circle cx=\"640\" cy=\"635\" r=\"424\"/>\n    <\/clipPath>\n  <\/defs>\n\n  <g id=\"emblem-root\" filter=\"url(#softBlueShadow)\">\n    <circle id=\"outer-ring\" cx=\"640\" cy=\"635\" r=\"594\" fill=\"none\" stroke=\"#1452B3\" stroke-width=\"23\" pathLength=\"1\"/>\n    <circle id=\"inner-ring\" cx=\"640\" cy=\"635\" r=\"424\" fill=\"none\" stroke=\"#1452B3\" stroke-width=\"14\" pathLength=\"1\"/>\n\n    <g id=\"wordmark-cn\" class=\"ring-text\">\n    <text id=\"cn-letter-0\" class=\"cn-letter\" x=\"288.64\" y=\"262.58\" transform=\"rotate(316.67 288.64 262.58)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">湖<\/text>\n    <text id=\"cn-letter-1\" class=\"cn-letter\" x=\"415.55\" y=\"174.82\" transform=\"rotate(334.00 415.55 174.82)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">北<\/text>\n    <text id=\"cn-letter-2\" class=\"cn-letter\" x=\"562.85\" y=\"128.85\" transform=\"rotate(351.33 562.85 128.85)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">工<\/text>\n    <text id=\"cn-letter-3\" class=\"cn-letter\" x=\"717.15\" y=\"128.85\" transform=\"rotate(368.67 717.15 128.85)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">程<\/text>\n    <text id=\"cn-letter-4\" class=\"cn-letter\" x=\"864.45\" y=\"174.82\" transform=\"rotate(386.00 864.45 174.82)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">学<\/text>\n    <text id=\"cn-letter-5\" class=\"cn-letter\" x=\"991.36\" y=\"262.58\" transform=\"rotate(403.33 991.36 262.58)\" font-family=\"'KaiTi', 'STKaiti', 'Microsoft YaHei', Arial, sans-serif\" font-size=\"76\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">院<\/text>\n    <\/g>\n    <g id=\"wordmark-en\" class=\"ring-text\">\n    <text id=\"en-letter-0\" class=\"en-letter\" x=\"127.11\" y=\"681.57\" transform=\"rotate(84.81 127.11 681.57)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">H<\/text>\n    <text id=\"en-letter-1\" class=\"en-letter\" x=\"135.46\" y=\"738.25\" transform=\"rotate(78.43 135.46 738.25)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">U<\/text>\n    <text id=\"en-letter-2\" class=\"en-letter\" x=\"150.05\" y=\"793.65\" transform=\"rotate(72.06 150.05 793.65)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">B<\/text>\n    <text id=\"en-letter-3\" class=\"en-letter\" x=\"170.70\" y=\"847.08\" transform=\"rotate(65.68 170.70 847.08)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">E<\/text>\n    <text id=\"en-letter-4\" class=\"en-letter\" x=\"197.16\" y=\"897.90\" transform=\"rotate(59.30 197.16 897.90)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">I<\/text>\n    <text id=\"en-letter-6\" class=\"en-letter\" x=\"258.33\" y=\"980.76\" transform=\"rotate(47.83 258.33 980.76)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">E<\/text>\n    <text id=\"en-letter-7\" class=\"en-letter\" x=\"299.09\" y=\"1021.01\" transform=\"rotate(41.45 299.09 1021.01)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">N<\/text>\n    <text id=\"en-letter-8\" class=\"en-letter\" x=\"344.07\" y=\"1056.49\" transform=\"rotate(35.07 344.07 1056.49)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">G<\/text>\n    <text id=\"en-letter-9\" class=\"en-letter\" x=\"392.72\" y=\"1086.75\" transform=\"rotate(28.70 392.72 1086.75)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">I<\/text>\n    <text id=\"en-letter-10\" class=\"en-letter\" x=\"444.42\" y=\"1111.42\" transform=\"rotate(22.32 444.42 1111.42)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">N<\/text>\n    <text id=\"en-letter-11\" class=\"en-letter\" x=\"498.55\" y=\"1130.19\" transform=\"rotate(15.94 498.55 1130.19)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">E<\/text>\n    <text id=\"en-letter-12\" class=\"en-letter\" x=\"554.42\" y=\"1142.84\" transform=\"rotate(9.57 554.42 1142.84)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">E<\/text>\n    <text id=\"en-letter-13\" class=\"en-letter\" x=\"611.36\" y=\"1149.20\" transform=\"rotate(3.19 611.36 1149.20)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">R<\/text>\n    <text id=\"en-letter-14\" class=\"en-letter\" x=\"668.64\" y=\"1149.20\" transform=\"rotate(-3.19 668.64 1149.20)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">I<\/text>\n    <text id=\"en-letter-15\" class=\"en-letter\" x=\"725.58\" y=\"1142.84\" transform=\"rotate(-9.57 725.58 1142.84)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">N<\/text>\n    <text id=\"en-letter-16\" class=\"en-letter\" x=\"781.45\" y=\"1130.19\" transform=\"rotate(-15.94 781.45 1130.19)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">G<\/text>\n    <text id=\"en-letter-18\" class=\"en-letter\" x=\"877.16\" y=\"1092.14\" transform=\"rotate(-27.42 877.16 1092.14)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">U<\/text>\n    <text id=\"en-letter-19\" class=\"en-letter\" x=\"926.47\" y=\"1062.97\" transform=\"rotate(-33.80 926.47 1062.97)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">N<\/text>\n    <text id=\"en-letter-20\" class=\"en-letter\" x=\"972.23\" y=\"1028.51\" transform=\"rotate(-40.17 972.23 1028.51)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">I<\/text>\n    <text id=\"en-letter-21\" class=\"en-letter\" x=\"1013.88\" y=\"989.17\" transform=\"rotate(-46.55 1013.88 989.17)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">V<\/text>\n    <text id=\"en-letter-22\" class=\"en-letter\" x=\"1050.90\" y=\"945.45\" transform=\"rotate(-52.93 1050.90 945.45)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">E<\/text>\n    <text id=\"en-letter-23\" class=\"en-letter\" x=\"1082.84\" y=\"897.90\" transform=\"rotate(-59.30 1082.84 897.90)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">R<\/text>\n    <text id=\"en-letter-24\" class=\"en-letter\" x=\"1109.30\" y=\"847.08\" transform=\"rotate(-65.68 1109.30 847.08)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">S<\/text>\n    <text id=\"en-letter-25\" class=\"en-letter\" x=\"1129.95\" y=\"793.65\" transform=\"rotate(-72.06 1129.95 793.65)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">I<\/text>\n    <text id=\"en-letter-26\" class=\"en-letter\" x=\"1144.54\" y=\"738.25\" transform=\"rotate(-78.43 1144.54 738.25)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">T<\/text>\n    <text id=\"en-letter-27\" class=\"en-letter\" x=\"1152.89\" y=\"681.57\" transform=\"rotate(-84.81 1152.89 681.57)\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"68\" font-weight=\"600\" fill=\"#1452B3\" text-anchor=\"middle\" dominant-baseline=\"middle\">Y<\/text>\n    <\/g>\n\n    <g id=\"mark\" clip-path=\"url(#innerDiskClip)\">\n      <g id=\"towers\">\n    <rect id=\"tower-01\" class=\"tower\" x=\"268\" y=\"580\" width=\"36\" height=\"220\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:0\"/>\n    <rect id=\"tower-02\" class=\"tower\" x=\"322\" y=\"592\" width=\"36\" height=\"196\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:1\"/>\n    <rect id=\"tower-03\" class=\"tower\" x=\"378\" y=\"596\" width=\"36\" height=\"184\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:2\"/>\n    <rect id=\"tower-04\" class=\"tower\" x=\"432\" y=\"602\" width=\"36\" height=\"178\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:3\"/>\n    <rect id=\"tower-05\" class=\"tower\" x=\"498\" y=\"420\" width=\"44\" height=\"360\" rx=\"22\" fill=\"url(#blueShade)\" style=\"--i:4\"/>\n    <rect id=\"tower-06\" class=\"tower\" x=\"552\" y=\"350\" width=\"36\" height=\"345\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:5\"/>\n    <rect id=\"tower-07\" class=\"tower\" x=\"602\" y=\"520\" width=\"36\" height=\"170\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:6\"/>\n    <rect id=\"tower-08\" class=\"tower\" x=\"654\" y=\"520\" width=\"36\" height=\"170\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:7\"/>\n    <rect id=\"tower-09\" class=\"tower\" x=\"706\" y=\"350\" width=\"36\" height=\"345\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:8\"/>\n    <rect id=\"tower-10\" class=\"tower\" x=\"760\" y=\"420\" width=\"44\" height=\"360\" rx=\"22\" fill=\"url(#blueShade)\" style=\"--i:9\"/>\n    <rect id=\"tower-11\" class=\"tower\" x=\"820\" y=\"602\" width=\"36\" height=\"178\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:10\"/>\n    <rect id=\"tower-12\" class=\"tower\" x=\"874\" y=\"596\" width=\"36\" height=\"184\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:11\"/>\n    <rect id=\"tower-13\" class=\"tower\" x=\"930\" y=\"592\" width=\"36\" height=\"196\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:12\"/>\n    <rect id=\"tower-14\" class=\"tower\" x=\"984\" y=\"580\" width=\"36\" height=\"220\" rx=\"18\" fill=\"url(#blueShade)\" style=\"--i:13\"/>\n      <\/g>\n      <text id=\"year-1943\" x=\"640\" y=\"742\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"74\" font-weight=\"500\" fill=\"#1452B3\" text-anchor=\"middle\">1943<\/text>\n      <path id=\"wave-top\" class=\"wave\" fill=\"#1452B3\" d=\"M252 819 C356 760 476 782 590 824 C716 870 835 884 1028 806 C956 882 796 931 642 895 C504 861 382 805 252 819 Z\"/>\n      <path id=\"wave-bottom\" class=\"wave\" fill=\"#1452B3\" d=\"M366 903 C496 858 620 903 746 932 C824 950 899 947 972 916 C890 985 748 996 596 950 C500 921 435 892 366 903 Z\"/>\n    <\/g>\n  <\/g>\n<\/svg>\n";
+    const SVG_URI = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(SVG_TEXT);
+    const DURATION = 1900;
+
+    let playbackRate = 0.45;
+    let pulseRaf = null;
+    let arcRaf = null;
+    window.__p2mReady = false;
+
+    function createSvgNode(node) {
+      const element = document.createElementNS(SVG_NS, node.tag);
+      for (const [name, value] of Object.entries(node.attrs || {})) {
+        element.setAttribute(name, value);
+      }
+      if (node.text) {
+        element.appendChild(document.createTextNode(node.text));
+      }
+      for (const child of node.children || []) {
+        element.appendChild(createSvgNode(child));
+      }
+      return element;
+    }
+
+    function heroAnimations() {
+      const root = document.getElementById("logo-root");
+      if (root.getAnimations) return root.getAnimations({ subtree: true });
+      return document.getAnimations().filter(animation => {
+        const target = animation.effect && animation.effect.target;
+        return target && root.contains(target);
+      });
+    }
+
+    function applyPlaybackRate() {
+      for (const animation of heroAnimations()) {
+        if (animation.updatePlaybackRate) animation.updatePlaybackRate(playbackRate);
+        else animation.playbackRate = playbackRate;
+      }
+    }
+
+    function renderHero() {
+      const root = document.getElementById("logo-root");
+      root.replaceChildren(createSvgNode(LOGO));
+      const svg = root.querySelector("svg");
+      if (svg) {
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.style.width = "100%";
+        svg.style.height = "auto";
+        svg.style.overflow = "visible";
+      }
+      requestAnimationFrame(() => requestAnimationFrame(applyPlaybackRate));
+    }
+
+    function flashPills(...names) {
+      document.querySelectorAll(".pill").forEach(pill => pill.classList.remove("active"));
+      names.forEach(name => {
+        const pill = document.querySelector(`[data-p="${name}"]`);
+        if (pill) pill.classList.add("active");
+      });
+    }
+
+    function cyclePrinciples() {
+      const phases = [
+        ["staging", "timing"],
+        ["anticipation", "squashstretch"],
+        ["arc", "slowinout"],
+        ["overlap", "followthrough"],
+        ["appeal"]
+      ];
+      let i = 0;
+      flashPills(...phases[0]);
+      return setInterval(() => {
+        i = (i + 1) % phases.length;
+        flashPills(...phases[i]);
+      }, Math.max(240, DURATION / phases.length / Math.max(playbackRate, 0.25)));
+    }
+
+    let pillTimer = null;
+    function replayMain() {
+      clearInterval(pillTimer);
+      renderHero();
+      pillTimer = cyclePrinciples();
+      setTimeout(() => {
+        clearInterval(pillTimer);
+        document.querySelectorAll(".pill").forEach(pill => pill.classList.remove("active"));
+      }, DURATION / Math.max(playbackRate, 0.25) + 600);
+    }
+
+    function formatSpeed(rate) {
+      return `${rate.toFixed(2)}x`;
+    }
+
+    function updateSpeedUI() {
+      const slider = document.getElementById("speedSlider");
+      const value = Number(slider.value);
+      const min = Number(slider.min);
+      const max = Number(slider.max);
+      const progress = ((value - min) / (max - min)) * 100;
+      document.getElementById("speedValue").textContent = formatSpeed(value);
+      slider.style.setProperty("--speed-progress", `${progress}%`);
+      const slow = value <= 0.251;
+      const btnSlow = document.getElementById("btnSlow");
+      btnSlow.textContent = slow ? "Normal speed" : "Slow motion";
+      btnSlow.style.background = slow ? "var(--surface)" : "";
+      btnSlow.style.borderColor = slow ? "var(--text-secondary)" : "";
+    }
+
+    function setPlaybackRate(rate, replay = false) {
+      const slider = document.getElementById("speedSlider");
+      const min = Number(slider.min);
+      const max = Number(slider.max);
+      playbackRate = Math.min(max, Math.max(min, Number(rate)));
+      slider.value = String(playbackRate);
+      updateSpeedUI();
+      applyPlaybackRate();
+      if (replay) replayMain();
+    }
+
+    function setupAtomImages() {
+      document.querySelectorAll(".atom-stage").forEach(stage => {
+        const img = new Image();
+        img.src = SVG_URI;
+        img.alt = "";
+        stage.appendChild(img);
+      });
+    }
+
+    function setupAtoms() {
+      const hover = document.querySelector('[data-atom="hover"] img');
+      const pulse = document.querySelector('[data-atom="pulse"] img');
+      const arc = document.querySelector('[data-atom="arc"] img');
+      const press = document.querySelector('[data-atom="press"] img');
+
+      hover.parentElement.addEventListener("mouseenter", () => {
+        flashPills("squashstretch", "appeal");
+        hover.style.transform = "scale(1.08) rotate(-1.5deg)";
+      });
+      hover.parentElement.addEventListener("mouseleave", () => {
+        hover.style.transform = "scale(1)";
+      });
+
+      function pulseTick(ts) {
+        const p = (Math.sin(ts / 900) + 1) / 2;
+        pulse.style.transform = `scale(${1 + 0.1 * p})`;
+        pulseRaf = requestAnimationFrame(pulseTick);
+      }
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        pulseRaf = requestAnimationFrame(pulseTick);
+      }
+
+      let arcAngle = -14;
+      let arcVel = 0;
+      function arcTick() {
+        arcVel += (0 - arcAngle) * 0.08;
+        arcVel *= 0.86;
+        arcAngle += arcVel;
+        arc.style.transform = `rotate(${arcAngle}deg)`;
+        arcRaf = requestAnimationFrame(arcTick);
+      }
+      arc.parentElement.addEventListener("mouseenter", () => {
+        flashPills("arc", "anticipation", "appeal");
+        cancelAnimationFrame(arcRaf);
+        arcAngle = 28;
+        arcVel = 0;
+        arcTick();
+      });
+      arc.parentElement.addEventListener("mouseleave", () => {
+        arcAngle = 0;
+      });
+
+      press.parentElement.addEventListener("mousedown", () => {
+        flashPills("squashstretch", "anticipation");
+        press.style.transform = "scaleX(1.10) scaleY(0.88)";
+      });
+      ["mouseup", "mouseleave"].forEach(ev => {
+        press.parentElement.addEventListener(ev, () => {
+          press.style.transform = "scale(1)";
+        });
+      });
+    }
+
+    function applyQaMode() {
+      const params = new URLSearchParams(location.search);
+      const chromelessMode = params.get("chromeless");
+      const requestedSpeed = params.get("speed") || params.get("rate");
+      const seekMs = params.get("t");
+      const staticMode = params.get("static");
+      if (chromelessMode !== null) {
+        document.documentElement.classList.add("p2m-chromeless");
+      }
+      if (requestedSpeed !== null && Number.isFinite(Number(requestedSpeed))) {
+        setPlaybackRate(Number(requestedSpeed), false);
+      }
+      if (seekMs === null && staticMode === null) {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          applyPlaybackRate();
+          window.__p2mReady = true;
+        }));
+        return;
+      }
+
+      document.documentElement.classList.add("p2m-chromeless");
+      cancelAnimationFrame(pulseRaf);
+      cancelAnimationFrame(arcRaf);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        for (const animation of heroAnimations()) {
+          if (staticMode !== null) {
+            try {
+              animation.finish();
+            } catch (err) {
+              animation.cancel();
+            }
+          } else {
+            animation.pause();
+            animation.currentTime = Number(seekMs);
+          }
+        }
+        window.__p2mReady = true;
+      }));
+    }
+
+    document.getElementById("btnReplay").addEventListener("click", replayMain);
+    document.getElementById("logo-root").addEventListener("click", replayMain);
+    document.getElementById("speedSlider").addEventListener("input", event => {
+      setPlaybackRate(event.target.value, false);
+    });
+    document.getElementById("btnSlow").addEventListener("click", () => {
+      const slow = Number(document.getElementById("speedSlider").value) <= 0.251;
+      setPlaybackRate(slow ? 0.45 : 0.25, true);
+    });
+
+    setupAtomImages();
+    setupAtoms();
+    setPlaybackRate(0.45, false);
+    renderHero();
+    applyQaMode();
+  </script>
+</body>
+</html>
